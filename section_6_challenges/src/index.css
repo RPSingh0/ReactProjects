@@ -1,0 +1,12 @@
+.field {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+}
+
+.field-button {
+    height: 50%;
+    margin: 2rem;
+}

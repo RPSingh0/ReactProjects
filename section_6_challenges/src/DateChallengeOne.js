@@ -13,7 +13,7 @@ function StepAndCount() {
     const [step, setStep] = useState(1);
     const [count, setCount] = useState(0);
 
-    let date = new Date();
+    const date = new Date();
 
     // derived state... next section
     date.setDate(date.getDate() + count);
@@ -29,34 +29,28 @@ function StepAndCount() {
     }
 
     function decreaseCount() {
-        setCount((c) => c - step);
+        if (count > 0) {
+            setCount((c) => c - step);
+        }
     }
 
     function increaseCount() {
         setCount((c) => c + step);
     }
 
-    function reset() {
-        setStep(1);
-        setCount(0);
-        date = new Date();
-    }
-
     return (
-        <div className="content">
+        <div>
             <div className="field">
                 <button className="field-button" onClick={decreaseStep}>-</button>
-                <input type="range" min="1" max="10" value={step}
-                       onChange={(event) => setStep(Number(event.target.value))}/>{step}
+                <p>Step: {step}</p>
                 <button className="field-button" onClick={increaseStep}>+</button>
             </div>
             <div className="field">
                 <button className="field-button" onClick={decreaseCount}>-</button>
-                <input type="text" value={count} onChange={(event) => setCount(Number(event.target.value))}/>
+                <p>Count: {count}</p>
                 <button className="field-button" onClick={increaseCount}>+</button>
             </div>
             <div>Date: {date.toDateString()}</div>
-            <button className="btn" onClick={reset}>Reset</button>
         </div>
     );
 

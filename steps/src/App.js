@@ -7,20 +7,18 @@ const messages = [
 ];
 
 export default function App() {
+    return (
+        <div>
+            <Steps/>
+        </div>
+    );
+}
 
-    // const step = 1;
-    // const arr = useState(1);
-    // console.log(arr);
-
+function Steps() {
     const [step, setStep] = useState(1);
     const [isOpen, setIsOpen] = useState(true);
 
-    // const step = 1;
-
     function handlePrevious() {
-        // never update the state like this... instead use a callback function
-        // to update the state whenever we want to do that based on the current state
-        // if (step > 1) setStep(step - 1);
         if (step > 1) setStep((s) => s - 1);
     }
 
@@ -39,20 +37,43 @@ export default function App() {
                         <div className={step >= 3 ? 'active' : ''}>3</div>
                     </div>
 
-                    <p className="message">Step {step}: {messages[step - 1]}</p>
+                    <StepMessage step={step}>
+                        {messages[step - 1]}
+                    </StepMessage>
 
                     <div className="buttons">
-                        <button
-                            style={{backgroundColor: '#7950f2', color: '#fff'}}
-                            onClick={handlePrevious}>Previous
-                        </button>
-                        <button
-                            style={{backgroundColor: '#7950f2', color: '#fff'}}
-                            onClick={handleNext}>Next
-                        </button>
+                        {/*<Button bgColor="#7950f2" textColor="#fff" onClick={handlePrevious} text="Previous" emoji="👈"/>*/}
+                        {/*<Button bgColor="#7950f2" textColor="#fff" onClick={handleNext} text="Next" emoji="👉"/>*/}
+
+                        {/*Below is the children props*/}
+                        <Button bgColor="#7950f2" textColor="#fff" onClick={handlePrevious}>
+                            <span>👈</span> Previous
+                        </Button>
+                        <Button bgColor="#7950f2" textColor="#fff" onClick={handleNext}>
+                            Next <span>👉</span>
+                        </Button>
                     </div>
                 </div>)
             }
         </>
-    )
+    );
+}
+
+function StepMessage({step, children}) {
+    return (
+        <div className="message">
+            <h3>Step {step}:</h3>
+            {children}
+        </div>
+    );
+}
+
+// A GENERIC BUTTON COMPONENT WITH `CHILDREN PROP`
+// function Button({textColor, bgColor, onClick, text, emoji}) {
+function Button({textColor, bgColor, onClick, children}) {
+    return (
+        <button style={{backgroundColor: bgColor, color: textColor}} onClick={onClick}>
+            {children}
+        </button>
+    );
 }

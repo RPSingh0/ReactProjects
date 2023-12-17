@@ -55,7 +55,7 @@ const KEY = '9df96ad1'
 
 export default function App() {
 
-    const [query, setQuery] = useState("inception");
+    const [query, setQuery] = useState("");
     const [movies, setMovies] = useState([]);
     const [watched, setWatched] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -95,6 +95,9 @@ export default function App() {
     }
 
     useEffect(function () {
+
+        const controller = new AbortController();
+
         async function fetchMovies() {
 
             try {
@@ -105,7 +108,9 @@ export default function App() {
                 setError('');
 
                 // const res = await fetch(`http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&s=${tempQuery}`);
-                const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&S=${query}`);
+                const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&S=${query}`, {
+                    signal: controller.signal
+                });
 
                 if (!res.ok) {
                     throw new Error("Something went wrong with fetching movies");
@@ -113,17 +118,23 @@ export default function App() {
 
                 const data = await res.json();
 
-                console.log(data);
+                // console.log(data);
 
                 if (data.Response === 'False') {
                     throw new Error("Movie not found");
                 }
 
                 setMovies(data.Search);
+                setError('');
 
             } catch (error) {
-                console.log(error);
-                setError(error.message);
+                // console.log(error);
+
+                // on aborting, the fetch request will throw an error, but that's actually not a real error
+                // so, we want to set the error only in case it is not an AbortError
+                if (error.name !== 'AbortError') {
+                    setError(error.message);
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -152,8 +163,13 @@ export default function App() {
             return;
         }
 
+        handleCloseMovie();
         // calling the async function now
         fetchMovies();
+
+        return function () {
+            controller.abort();
+        }
 
     }, [query]);
 
@@ -335,6 +351,34 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched, watched}) {
         getMovieDetails();
 
     }, [selectedId]);
+
+    useEffect(function () {
+        if (!title) return;
+        document.title = `Movie | ${title}`;
+
+        // cleanup function
+        return function () {
+            document.title = 'usePopcorn';
+            // console.log(`Clean up effect for movie ${title}`);
+        }
+
+    }, [title]);
+
+    useEffect(function () {
+
+        function callback(event) {
+            if (event.code === 'Escape') {
+                onCloseMovie();
+                // console.log('Closing');
+            }
+        }
+
+        document.addEventListener('keydown', callback);
+
+        return function () {
+            document.removeEventListener('keydown', callback);
+        }
+    }, [onCloseMovie]);
 
     return (
         <div className="details">

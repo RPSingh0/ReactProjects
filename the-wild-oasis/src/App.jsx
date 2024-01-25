@@ -1,33 +1,13 @@
 import styled from "styled-components";
 import GlobalStyles from "./styles/GlobalStyles.js";
-
-const H1 = styled.h1`
-  font-size: 30px;
-  font-weight: 600;
-  background-color: greenyellow;
-`;
-
-const Button = styled.button`
-  font-size: 1.4rem;
-  padding: 1.2rem 1.6rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 7px;
-  background-color: mediumpurple;
-  color: white;
-  cursor: pointer;
-  margin: 20px;
-`;
-
-const Input = styled.input`
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 0.8rem 1.2rem;
-`;
+import Button from "./ui/Button.jsx";
+import Input from "./ui/Input.jsx";
+import Heading from "./ui/Header.jsx";
+import Row from "./ui/Row.jsx";
 
 // To style the app component itself, the convention is to create a Styled{name} styled component and then wrap the jsx
 const StyledApp = styled.div`
-  background-color: orangered;
+  //background-color: orangered;
   padding: 20px;
 `;
 
@@ -36,10 +16,33 @@ function App() {
         <>
             <GlobalStyles/>
             <StyledApp>
-                <H1>The Wild Oasis</H1>
-                <Button onClick={() => alert("Check In")}>Check in</Button>
-                <Button onClick={() => alert("Check Out")}>Check out</Button>
-                <Input type={"number"} placeholder={"Number of guests"}></Input>
+                <Row>
+                    <Row type={"horizontal"}>
+                        <Heading as={"h1"}>The Wild Oasis</Heading>
+                        <div>
+                            <Heading as={"h2"}>Check in and out</Heading>
+                            <Button
+                                variation={"primary"}
+                                size={"medium"}
+                                onClick={() => alert("Check In")}>
+                                Check in
+                            </Button>
+                            <Button
+                                variation={"secondary"}
+                                size={"small"}
+                                onClick={() => alert("Check Out")}>
+                                Check out
+                            </Button>
+                        </div>
+                    </Row>
+                    <Row>
+                        <Heading as={"h3"}>Form</Heading>
+                        <form>
+                            <Input type={"number"} placeholder={"Number of guests"}></Input>
+                            <Input type={"number"} placeholder={"Number of guests"}></Input>
+                        </form>
+                    </Row>
+                </Row>
             </StyledApp>
         </>
     );
